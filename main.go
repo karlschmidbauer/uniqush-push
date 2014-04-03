@@ -20,7 +20,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	. "github.com/uniqush/uniqush-push/srv"
+	. "github.com/ryanspradlinag/uniqush-push/srv"
 	"os"
 	"runtime"
 )
@@ -28,7 +28,7 @@ import (
 var uniqushPushConfFlags = flag.String("config", "/etc/uniqush/uniqush-push.conf", "Config file path")
 var uniqushPushShowVersionFlag = flag.Bool("version", false, "Version info")
 
-var uniqushPushVersion = "uniqush-push 1.5.1"
+var uniqushPushVersion = "uniqush-push 1.5.1 [accenture-patched]"
 
 func installPushSrvices() {
 	InstallGCM()
