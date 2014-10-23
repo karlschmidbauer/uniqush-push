@@ -481,9 +481,9 @@ func (self *apnsPushService) singlePush(payload, token []byte, expiry uint32, mi
 
 	deadline := time.Now().Add(time.Duration(maxWaitTime) * time.Second)
 	conn.SetWriteDeadline(deadline)
-
+	errChan <- fmt.Errorf("Starting to writen. deadline=%v", deadline)
 	err = writen(conn, pdu)
-
+	errChan <- fmt.Errorf("Finished writen. time=%v", time.Now())
 	sleepTime := time.Duration(maxWaitTime) * time.Second
 	for nrRetries := 0; err != nil && nrRetries < 3; nrRetries++ {
 		errChan <- fmt.Errorf("error on connection with %v: %v. Will retry within %v", conn.RemoteAddr(), err, sleepTime)
