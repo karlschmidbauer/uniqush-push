@@ -442,11 +442,14 @@ func (self *apnsConnManager) InitConn(conn net.Conn, n int) error {
 }
 
 func (self *apnsPushService) singlePush(payload, token []byte, expiry uint32, mid uint32, pool *connpool.Pool, errChan chan<- error) {
+	errChan <- fmt.Errorf("Getting a connection")
 	conn, err := pool.Get()
 	if err != nil {
+		errChan <- fmt.Errorf("Error getting a connection")
 		errChan <- err
 		return
 	}
+	errChan <- fmt.Errorf("Got a connection. conn=%v", conn)
 	// Total size for each notification:
 	//
 	// - command: 1
@@ -504,8 +507,11 @@ func (self *apnsPushService) singlePush(payload, token []byte, expiry uint32, mi
 		conn.SetWriteDeadline(deadline)
 		err = writen(conn, pdu)
 	}
+	errChan <- fmt.Errorf("Sent, forcing timeout")
 	conn.SetWriteDeadline(time.Time{})
+	errChan <- fmt.Errorf("Closing connection")
 	conn.Close()
+	errChan <- fmt.Errorf("Connection closed")
 }
 
 func (self *apnsPushService) multiPush(req *pushRequest, pool *connpool.Pool) {
