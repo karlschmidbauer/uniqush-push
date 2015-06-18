@@ -454,14 +454,14 @@ func (self *apnsConnManager) InitConn(conn net.Conn, n int) error {
 }
 
 func (self *apnsPushService) singlePush(payload, token []byte, expiry uint32, mid uint32, pool *connpool.Pool, errChan chan<- error) {
-	errChan <- fmt.Errorf("Getting a connection")
+	fmt.Println("Getting a connection")
 	conn, err := pool.Get()
 	if err != nil {
 		errChan <- fmt.Errorf("Error getting a connection")
 		errChan <- err
 		return
 	}
-	errChan <- fmt.Errorf("Got a connection. conn=%v", conn)
+	fmt.Println("Got a connection. conn=%v", conn)
 	// Total size for each notification:
 	//
 	// - command: 1
@@ -496,9 +496,9 @@ func (self *apnsPushService) singlePush(payload, token []byte, expiry uint32, mi
 
 	deadline := time.Now().Add(time.Duration(maxWaitTime) * time.Second)
 	conn.SetWriteDeadline(deadline)
-	errChan <- fmt.Errorf("Starting to writen. deadline=%v", deadline)
+	fmt.Println("Starting to writen. deadline=%v", deadline)
 	err = writen(conn, pdu)
-	errChan <- fmt.Errorf("Finished writen. time=%v", time.Now())
+	fmt.Println("Finished writen. time=%v", time.Now())
 	sleepTime := time.Duration(maxWaitTime) * time.Second
 	for nrRetries := 0; err != nil && nrRetries < 3; nrRetries++ {
 		errChan <- fmt.Errorf("error on connection with %v: %v. Will retry within %v", conn.RemoteAddr(), err, sleepTime)
@@ -523,11 +523,11 @@ func (self *apnsPushService) singlePush(payload, token []byte, expiry uint32, mi
 		conn.SetWriteDeadline(deadline)
 		err = writen(conn, pdu)
 	}
-	errChan <- fmt.Errorf("Sent, forcing timeout")
+	fmt.Println("Sent, forcing timeout")
 	conn.SetWriteDeadline(time.Time{})
-	errChan <- fmt.Errorf("Closing connection")
+	fmt.Println("Closing connection")
 	conn.Close()
-	errChan <- fmt.Errorf("Connection closed")
+	fmt.Println("Connection closed")
 }
 
 func (self *apnsPushService) multiPush(req *pushRequest, pool *connpool.Pool) {

@@ -27,7 +27,7 @@ import (
 
 var uniqushPushConfFlags = flag.String("config", "/etc/uniqush/uniqush-push.conf", "Config file path")
 var uniqushPushShowVersionFlag = flag.Bool("version", false, "Version info")
-var uniqushPushVersion = "uniqush-push 2.0.1"
+var uniqushPushVersion = "uniqush-push 2.0.2"
 
 func installPushSrvices() {
 	InstallGCM()
